@@ -1,4 +1,17 @@
 {
   "name": "@parse/react",
-  "version": "0.0.0"  
+  "version": "0.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "./dist",
+    "./src"
+  ],
+  "scripts": {
+    "start": "tsc --build ./tsconfig.json --watch",
+		"build": "tsc --build ./tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.3"
+  }
 }
