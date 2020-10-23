@@ -9,16 +9,21 @@
     "@testing-library/user-event": "^7.2.1",
     "@types/jest": "^24.9.1",
     "@types/node": "^12.19.1",
+    "@types/parse": "^2.12.6",
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
     "parse": "^2.17.0",
+    "parse-dashboard": "^2.1.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "3.4.4",
     "typescript": "^3.7.5"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start-mongodb": "mongodb-runner start",
+    "start-parse-server": "parse-server --appId APPLICATION_ID --masterKey MASTER_KEY --javascriptKey JAVASCRIPT_KEY --databaseURI mongodb://localhost/test",
+    "start-parse-dashboard": "parse-dashboard --config ./parse-dashboard-config.json",
+    "start": "npm run start-mongodb && npm run start-parse-server & react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -37,5 +42,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "mongodb-runner": "^4.8.0",
+    "parse-server": "^4.3.0"
   }
 }

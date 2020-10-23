@@ -1,0 +1,11 @@
+{
+  "apps": [
+    {
+      "serverURL": "http://localhost:1337/parse",
+      "appId": "APPLICATION_ID",
+      "masterKey": "MASTER_KEY",
+      "javascriptKey": "JAVASCRIPT_KEY",
+      "appName": "Todo"
+    }
+  ]
+}
