@@ -9,9 +9,14 @@
   ],
   "scripts": {
     "start": "tsc --build ./tsconfig.json --watch",
-		"build": "tsc --build ./tsconfig.json"
+    "build": "tsc --build ./tsconfig.json"
+  },
+  "peerDependencies": {
+    "parse": ">= 2.17.0",
+    "react": ">= 16.8.0"
   },
   "devDependencies": {
+    "@types/parse": "^2.12.6",
     "typescript": "^4.0.3"
   }
 }
