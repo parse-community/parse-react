@@ -1,0 +1,12 @@
+{
+  "appId": "APPLICATION_ID",
+  "masterKey": "MASTER_KEY",
+  "javascriptKey": "JAVASCRIPT_KEY",
+  "databaseURI": "mongodb://localhost/test",
+  "startLiveQueryServer": true,
+  "liveQuery": {
+    "classNames": [
+      "Todo"
+    ]
+  }
+}

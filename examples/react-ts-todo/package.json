@@ -21,9 +21,10 @@
   },
   "scripts": {
     "start-mongodb": "mongodb-runner start",
-    "start-parse-server": "parse-server --appId APPLICATION_ID --masterKey MASTER_KEY --javascriptKey JAVASCRIPT_KEY --databaseURI mongodb://localhost/test",
+    "start-parse-server": "parse-server ./parse-server-config.json",
     "start-parse-dashboard": "parse-dashboard --config ./parse-dashboard-config.json",
-    "start": "npm run start-mongodb && npm run start-parse-server & react-scripts start",
+    "start-react-app": "react-scripts start",
+    "start": "npm run start-mongodb && npm run start-parse-server & npm run start-parse-dashboard & npm run start-react-app",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
