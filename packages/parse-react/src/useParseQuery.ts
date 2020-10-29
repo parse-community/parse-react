@@ -1,4 +1,4 @@
-import { useReducer, useCallback, useEffect } from 'react';
+import { useReducer, useMemo, useCallback, useEffect } from 'react';
 import Parse from 'parse';
 
 interface ResultState<T extends Parse.Object<Parse.Attributes>> {
@@ -30,16 +30,16 @@ type LoadLocalDatastoreObjectsAction<T extends Parse.Object<Parse.Attributes>> =
   }
 };
 
-// const loadLocalDatastoreObjects = <T extends Parse.Object<Parse.Attributes>>(
-//   queryId: number,
-//   objects: T[]
-// ): LoadLocalDatastoreObjectsAction<T> => ({
-//   type: ActionTypes.LoadLocalDatastoreObjects,
-//   payload: {
-//     queryId,
-//     objects
-//   }
-// });
+const loadLocalDatastoreObjects = <T extends Parse.Object<Parse.Attributes>>(
+  queryId: number,
+  objects: T[]
+): LoadLocalDatastoreObjectsAction<T> => ({
+  type: ActionTypes.LoadLocalDatastoreObjects,
+  payload: {
+    queryId,
+    objects
+  }
+});
 
 const setIsLive = (queryId: number, isLive: boolean) => ({
   type: ActionTypes.SetIsLive,
@@ -170,8 +170,20 @@ const reducer = <T extends Parse.Object<Parse.Attributes>>(
   }
 };
 
+export enum LocalDatastorePinType {
+  All,
+  Default,
+  Custom
+}
+
+export interface LocalDatastoreOptions {
+  enable?: boolean;
+  pinType?: LocalDatastorePinType;
+  pinName?: string;
+}
+
 export interface UseParseQueryOptions {
-  enableLocalDatastore?: boolean;
+  localDatastore?: LocalDatastoreOptions;
   enableLiveQuery?: boolean;
 }
 
@@ -183,12 +195,31 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
   query: Parse.Query<T>,
   options?: UseParseQueryOptions
 ): UseParseQueryResult<T> => {
-  const queryString = JSON.stringify(query.toJSON());
+  const queryString = JSON.stringify({
+    className: query.className,
+    query: query.toJSON()
+  });
 
   const {
-    enableLocalDatastore = true,
+    localDatastore = {},
     enableLiveQuery = true
   } = options || {};
+
+  const {
+    enable: enableLocalDatastore = true,
+    pinType: localDatastorePinType = LocalDatastorePinType.All,
+    pinName: localDatastorePinName
+  } = localDatastore;
+
+  if (localDatastorePinType === LocalDatastorePinType.Custom && !localDatastorePinName) {
+    throw new Error(
+      'localDatastore.pinName option must be specified when localDatastore.pinType option is "Custom"'
+    );
+  } else if (localDatastorePinType !== LocalDatastorePinType.Custom && localDatastorePinName) {
+    throw new Error(
+      'localDatastore.pinName option must not be specified when localDatastore.pinType option is not "Custom"'
+    );
+  }
 
   const [
     {
@@ -202,22 +233,85 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
     dispatch
   ] = useReducer(reducer as Reducer<T>, initialState);
 
+  const localDatastoreQuery: Parse.Query<T> | undefined = useMemo(
+    () => {
+      if (enableLocalDatastore) {
+        const queryJSON = JSON.parse(queryString);
+
+        const memoedQuery = Parse.Query.fromJSON(queryJSON.className, queryJSON.query) as Parse.Query<T>;
+
+        if (localDatastorePinType === LocalDatastorePinType.All) {
+          memoedQuery.fromLocalDatastore();
+        } else if (localDatastorePinType === LocalDatastorePinType.Default) {
+          memoedQuery.fromPin();
+        } else {
+          memoedQuery.fromPinWithName(localDatastorePinName!);
+        }
+
+        return memoedQuery;
+      }
+
+      return;
+    },
+    [queryString, enableLocalDatastore, localDatastorePinType, localDatastorePinName]
+  );
+
+  const findFromLocalDatastore = useCallback(
+    async () => {
+      try {
+        dispatch(loadLocalDatastoreObjects(
+          queryId,
+          await localDatastoreQuery!.find()
+        ));
+      } catch (e) {
+        dispatch(fail(queryId, e));
+      }
+    },
+    [queryId, localDatastoreQuery]
+  );
+
+  const parseServerQuery: Parse.Query<T> | undefined = useMemo(
+    () => {
+      const queryJSON = JSON.parse(queryString);
+
+      return Parse.Query.fromJSON(queryJSON.className, queryJSON.query) as Parse.Query<T>;
+    },
+    [queryString]
+  );
+
   const findFromParseServer = useCallback(
     async () => {
       if (enableLocalDatastore || enableLiveQuery) {
         dispatch(setIsSyncing(queryId, true));
       }
 
+      let objects;
       try {
-        dispatch(loadParseServerObjects(
-          queryId,
-          await query.find()
-        ));
+        objects = await parseServerQuery.find();
       } catch (e) {
         dispatch(fail(queryId, e));
+
+        return ;
+      }
+
+      dispatch(loadParseServerObjects(
+        queryId,
+        objects
+      ));
+
+      if (enableLiveQuery) {
+        try {
+          if (localDatastorePinName) {
+            await Parse.Object.pinAllWithName(localDatastorePinName, objects);
+          } else {
+            await Parse.Object.pinAll(objects);
+          }
+        } catch (e) {
+          dispatch(fail(queryId, e));
+        }
       }
     },
-    [query, enableLocalDatastore, enableLiveQuery, queryId]
+    [enableLocalDatastore, localDatastorePinName, enableLiveQuery, queryId, parseServerQuery]
   );
 
   const subscribeLiveQuery = useCallback(
@@ -264,6 +358,10 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
   useEffect(
     () => {
       let unsubscribeLiveQuery: (() => void) | undefined;
+
+      if (enableLocalDatastore) {
+        findFromLocalDatastore();
+      }
 
       if (enableLiveQuery) {
         unsubscribeLiveQuery = subscribeLiveQuery();
