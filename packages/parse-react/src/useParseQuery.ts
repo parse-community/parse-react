@@ -280,43 +280,74 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
   );
 
   const findFromParseServer = useCallback(
-    async () => {
-      if (enableLocalDatastore || enableLiveQuery) {
-        dispatch(setIsSyncing(queryId, true));
-      }
+    () => {
+      let isCanceled = false;
+      let attempts = 1;
 
-      let objects;
-      try {
-        objects = await parseServerQuery.find();
-      } catch (e) {
-        dispatch(fail(queryId, e));
-
-        return ;
-      }
-
-      dispatch(loadParseServerObjects(
-        queryId,
-        objects
-      ));
-
-      if (enableLiveQuery) {
+      const find = async () => {
+        if (enableLocalDatastore || enableLiveQuery) {
+          dispatch(setIsSyncing(queryId, true));
+        }
+  
+        let objects;
         try {
-          if (localDatastorePinName) {
-            await Parse.Object.pinAllWithName(localDatastorePinName, objects);
-          } else {
-            await Parse.Object.pinAll(objects);
-          }
+          objects = await parseServerQuery.find();
         } catch (e) {
-          dispatch(fail(queryId, e));
+          if (
+            e instanceof Parse.Error &&
+            e.code === Parse.Error.CONNECTION_FAILED
+          ) {
+            if (!isCanceled) {
+              setTimeout(
+                () => {
+                  if (!isCanceled) {
+                    attempts++;
+                    find();
+                  }
+                },
+                Math.random() * Math.min(30, (Math.pow(2, attempts) - 1)) * 1000
+              );
+            }
+          } else {
+            dispatch(fail(queryId, e));
+          }        
+  
+          return ;
+        }
+  
+        dispatch(loadParseServerObjects(
+          queryId,
+          objects
+        ));
+  
+        if (enableLiveQuery) {
+          try {
+            if (localDatastorePinName) {
+              await Parse.Object.pinAllWithName(localDatastorePinName, objects);
+            } else {
+              await Parse.Object.pinAll(objects);
+            }
+          } catch (e) {
+            dispatch(fail(queryId, e));
+          }
         }
       }
+
+      const cancel = () => {
+        isCanceled = true;
+      }
+      
+      find();
+
+      return cancel;
     },
     [enableLocalDatastore, localDatastorePinName, enableLiveQuery, queryId, parseServerQuery]
   );
 
   const subscribeLiveQuery = useCallback(
-    (): (() => void) => {
+    () => {
       let liveQuerySubscription: Parse.LiveQuerySubscription | undefined;
+      let cancelFindFromParseServer: (() => void) | undefined;
 
       const subscribe = async () => {
         try {
@@ -330,7 +361,11 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
         liveQuerySubscription.on('open', () => {
           dispatch(setIsLive(queryId, true));
 
-          findFromParseServer();
+          if (cancelFindFromParseServer) {
+            cancelFindFromParseServer();
+          }
+
+          cancelFindFromParseServer = findFromParseServer();
         });
     
         liveQuerySubscription.on('close', () => {
@@ -341,6 +376,10 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
       const subscribePromise = subscribe();
     
       const unsubscribe = async () => {
+        if (cancelFindFromParseServer) {
+          cancelFindFromParseServer();
+        }
+
         await subscribePromise;
 
         if (liveQuerySubscription) {
@@ -357,19 +396,19 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
 
   useEffect(
     () => {
-      let unsubscribeLiveQuery: (() => void) | undefined;
+      let cleanUp: (() => void) | undefined;
 
       if (enableLocalDatastore) {
         findFromLocalDatastore();
       }
 
       if (enableLiveQuery) {
-        unsubscribeLiveQuery = subscribeLiveQuery();
+        cleanUp = subscribeLiveQuery();
       } else {
-        findFromParseServer();
+        cleanUp = findFromParseServer();
       }
 
-      return unsubscribeLiveQuery;
+      return cleanUp;
     },
     [queryId]
   );
