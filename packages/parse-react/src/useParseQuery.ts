@@ -1,4 +1,4 @@
-import { useReducer, useMemo, useCallback, useEffect } from 'react';
+import { useRef, useReducer, useMemo, useCallback, useEffect } from 'react';
 import Parse from 'parse';
 import { compareParseObjects } from './util';
 
@@ -234,7 +234,7 @@ const reducer = <T extends Parse.Object<Parse.Attributes>>(
 
         objects.splice(index, 0, action.payload.object);
 
-        if (count) {
+        if (count !== undefined) {
           count = state.count! + objects.length - state.objects!.length;
 
           if (count < 0) {
@@ -271,7 +271,7 @@ const reducer = <T extends Parse.Object<Parse.Attributes>>(
           object => object.id !== action.payload.object.id
         );
 
-        if (count) {
+        if (count !== undefined) {
           count--;
 
           if (count < 0) {
@@ -325,6 +325,8 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
     enableLiveQuery = true
   } = options || {};
 
+  const stateRef = useRef<State<T>>(initialState);
+
   const [
     {
       queryId,
@@ -337,8 +339,11 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
     },
     dispatch
   ] = useReducer<Reducer<T>>(
-    reducer,
-    initialState
+    (state, action) => {
+      stateRef.current = reducer(state, action);
+      return stateRef.current;
+    },
+    stateRef.current
   );
 
   const localDatastoreQuery: Parse.Query<T> | undefined = useMemo(
@@ -482,6 +487,19 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
 
       const unloadAndUnPinObject = async (object: T) => {
         dispatch(unloadObject(queryId, object as T));
+
+        if (
+          (parseServerQuery as any)._limit !== undefined &&
+          (parseServerQuery as any)._limit >= 0 &&
+          stateRef.current.objects &&
+          stateRef.current.objects.length + 1 === (parseServerQuery as any)._limit
+        ) {
+          if (cancelFindFromParseServer) {
+            cancelFindFromParseServer();
+          }
+
+          cancelFindFromParseServer = findFromParseServer();
+        }
 
         if (enableLocalDatastore) {
           try {
