@@ -1,11 +1,13 @@
 import { useReducer, useMemo, useCallback, useEffect } from 'react';
 import Parse from 'parse';
+import { compareParseObjects } from './util';
 
 interface ResultState<T extends Parse.Object<Parse.Attributes>> {
   isLoading: boolean;
   isLive: boolean;
   isSyncing: boolean;
   objects?: T[];
+  count?: number;
   error?: Error;
 }
 
@@ -18,6 +20,8 @@ enum ActionTypes {
   SetIsLive,
   SetIsSyncing,
   LoadParseServerObjects,
+  LoadObject,
+  UnloadObject,
   Fail,
   Reset
 }
@@ -26,18 +30,21 @@ type LoadLocalDatastoreObjectsAction<T extends Parse.Object<Parse.Attributes>> =
   type: ActionTypes.LoadLocalDatastoreObjects,
   payload: {
     queryId: number,
-    objects: T[]
+    objects: T[],
+    count?: number
   }
 };
 
 const loadLocalDatastoreObjects = <T extends Parse.Object<Parse.Attributes>>(
   queryId: number,
-  objects: T[]
+  objects: T[],
+  count?: number
 ): LoadLocalDatastoreObjectsAction<T> => ({
   type: ActionTypes.LoadLocalDatastoreObjects,
   payload: {
     queryId,
-    objects
+    objects,
+    count
   }
 });
 
@@ -61,18 +68,65 @@ type LoadParseServerObjectsAction<T extends Parse.Object<Parse.Attributes>> = {
   type: ActionTypes.LoadParseServerObjects,
   payload: {
     queryId: number,
-    objects: T[]
+    objects: T[],
+    count?: number
   }
 };
 
 const loadParseServerObjects = <T extends Parse.Object<Parse.Attributes>>(
   queryId: number,
-  objects: T[]
+  objects: T[],
+  count?: number
 ): LoadParseServerObjectsAction<T> => ({
   type: ActionTypes.LoadParseServerObjects,
   payload: {
     queryId,
-    objects
+    objects,
+    count
+  }
+});
+
+type LoadObjectAction<T extends Parse.Object<Parse.Attributes>> = {
+  type: ActionTypes.LoadObject,
+  payload: {
+    queryId: number,
+    object: T,
+    order?: string[],
+    limit?: number
+  }
+};
+
+const loadObject = <T extends Parse.Object<Parse.Attributes>>(
+  queryId: number,
+  object: T,
+  order?: string[],
+  limit?: number
+): LoadObjectAction<T> => ({
+  type: ActionTypes.LoadObject,
+  payload: {
+    queryId,
+    object,
+    order,
+    limit
+  }
+});
+
+type UnloadObjectAction<T extends Parse.Object<Parse.Attributes>> = {
+  type: ActionTypes.UnloadObject,
+  payload: {
+    queryId: number,
+    object: T
+  }
+};
+
+const unloadObject = <T extends Parse.Object<Parse.Attributes>>(
+  queryId: number,
+  object: T
+): UnloadObjectAction<T> => ({
+  type: ActionTypes.UnloadObject,
+  payload: {
+    queryId,
+    object
   }
 });
 
@@ -91,6 +145,8 @@ const reset = () => ({
 type Action<T extends Parse.Object<Parse.Attributes>> =
   LoadLocalDatastoreObjectsAction<T> |
   LoadParseServerObjectsAction<T> |
+  LoadObjectAction<T> |
+  UnloadObjectAction<T> |
   ReturnType<
     typeof setIsLive |
     typeof setIsSyncing |
@@ -131,7 +187,8 @@ const reducer = <T extends Parse.Object<Parse.Attributes>>(
       return {
         ...state,
         isLoading: false,
-        objects: state.isLoading ? action.payload.objects : state.objects
+        objects: state.isLoading ? action.payload.objects : state.objects,
+        count: state.isLoading ? action.payload.count : state.count
       };
     }
 
@@ -154,7 +211,82 @@ const reducer = <T extends Parse.Object<Parse.Attributes>>(
         ...state,
         isLoading: false,
         isSyncing: false,
-        objects: action.payload.objects
+        objects: action.payload.objects,
+        count: action.payload.count
+      };
+    }
+
+    case ActionTypes.LoadObject: {
+      let objects = state.objects;
+      let count = state.count;
+
+      if (objects) {
+        objects = objects.filter(
+          object => object.id !== action.payload.object.id
+        );
+
+        let index = 0;
+        if (action.payload.order) {
+          index = objects.findIndex(
+            object => compareParseObjects(object, action.payload.object, action.payload.order as string[]) >= 0
+          );
+        }
+
+        objects.splice(index, 0, action.payload.object);
+
+        if (count) {
+          count = state.count! + objects.length - state.objects!.length;
+
+          if (count < 0) {
+            count = 0;
+          }
+
+          if (count < objects.length) {
+            count = objects.length;
+          }
+        }
+
+        if (
+          action.payload.limit !== undefined &&
+          action.payload.limit >= 0 &&
+          objects.length > action.payload.limit
+        ) {
+          objects = objects.slice(0, action.payload.limit);
+        }
+      }
+      
+      return {
+        ...state,
+        objects,
+        count
+      };
+    }
+
+    case ActionTypes.UnloadObject: {
+      let objects = state.objects;
+      let count = state.count;
+
+      if (objects) {
+        objects = objects.filter(
+          object => object.id !== action.payload.object.id
+        );
+
+        if (count) {
+          count--;
+
+          if (count < 0) {
+            count = 0;
+          }
+
+          if (count < objects.length) {
+            count = objects.length;
+          }
+        }
+      }
+
+      return {
+        ...state,
+        objects 
       };
     }
 
@@ -170,20 +302,8 @@ const reducer = <T extends Parse.Object<Parse.Attributes>>(
   }
 };
 
-export enum LocalDatastorePinType {
-  All,
-  Default,
-  Custom
-}
-
-export interface LocalDatastoreOptions {
-  enable?: boolean;
-  pinType?: LocalDatastorePinType;
-  pinName?: string;
-}
-
 export interface UseParseQueryOptions {
-  localDatastore?: LocalDatastoreOptions;
+  enableLocalDatastore?: boolean;
   enableLiveQuery?: boolean;
 }
 
@@ -201,25 +321,9 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
   });
 
   const {
-    localDatastore = {},
+    enableLocalDatastore = true,
     enableLiveQuery = true
   } = options || {};
-
-  const {
-    enable: enableLocalDatastore = true,
-    pinType: localDatastorePinType = LocalDatastorePinType.All,
-    pinName: localDatastorePinName
-  } = localDatastore;
-
-  if (localDatastorePinType === LocalDatastorePinType.Custom && !localDatastorePinName) {
-    throw new Error(
-      'localDatastore.pinName option must be specified when localDatastore.pinType option is "Custom"'
-    );
-  } else if (localDatastorePinType !== LocalDatastorePinType.Custom && localDatastorePinName) {
-    throw new Error(
-      'localDatastore.pinName option must not be specified when localDatastore.pinType option is not "Custom"'
-    );
-  }
 
   const [
     {
@@ -228,10 +332,14 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
       isLive,
       isSyncing,
       objects,
+      count,
       error
     },
     dispatch
-  ] = useReducer(reducer as Reducer<T>, initialState);
+  ] = useReducer<Reducer<T>>(
+    reducer,
+    initialState
+  );
 
   const localDatastoreQuery: Parse.Query<T> | undefined = useMemo(
     () => {
@@ -239,32 +347,38 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
         const queryJSON = JSON.parse(queryString);
 
         const memoedQuery = Parse.Query.fromJSON(queryJSON.className, queryJSON.query) as Parse.Query<T>;
-
-        if (localDatastorePinType === LocalDatastorePinType.All) {
-          memoedQuery.fromLocalDatastore();
-        } else if (localDatastorePinType === LocalDatastorePinType.Default) {
-          memoedQuery.fromPin();
-        } else {
-          memoedQuery.fromPinWithName(localDatastorePinName!);
-        }
+        memoedQuery.fromPinWithName(queryString);
 
         return memoedQuery;
       }
 
       return;
     },
-    [queryString, enableLocalDatastore, localDatastorePinType, localDatastorePinName]
+    [queryString, enableLocalDatastore]
   );
 
   const findFromLocalDatastore = useCallback(
     async () => {
+      let findResult;
       try {
-        dispatch(loadLocalDatastoreObjects(
-          queryId,
-          await localDatastoreQuery!.find()
-        ));
+        findResult = await localDatastoreQuery!.find();
       } catch (e) {
         dispatch(fail(queryId, e));
+
+        return;
+      }
+
+      if ((localDatastoreQuery as any)._count) {
+        dispatch(loadLocalDatastoreObjects(
+          queryId,
+          (findResult as any).results,
+          (findResult as any).count
+        ));
+      } else {
+        dispatch(loadLocalDatastoreObjects(
+          queryId,
+          findResult
+        ));
       }
     },
     [queryId, localDatastoreQuery]
@@ -289,9 +403,9 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
           dispatch(setIsSyncing(queryId, true));
         }
   
-        let objects;
+        let findResult;
         try {
-          objects = await parseServerQuery.find();
+          findResult = await parseServerQuery.find();
         } catch (e) {
           if (
             e instanceof Parse.Error &&
@@ -314,19 +428,24 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
   
           return ;
         }
+
+        let objects = findResult;
+        let count;
+        if ((parseServerQuery as any)._count) {
+          objects = (findResult as any).results;
+          count = (findResult as any).count;
+        }
   
         dispatch(loadParseServerObjects(
           queryId,
-          objects
+          objects,
+          count
         ));
   
-        if (enableLiveQuery) {
+        if (enableLocalDatastore) {
           try {
-            if (localDatastorePinName) {
-              await Parse.Object.pinAllWithName(localDatastorePinName, objects);
-            } else {
-              await Parse.Object.pinAll(objects);
-            }
+            await Parse.Object.unPinAllObjectsWithName(queryString);
+            await Parse.Object.pinAllWithName(queryString, objects);
           } catch (e) {
             dispatch(fail(queryId, e));
           }
@@ -341,7 +460,7 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
 
       return cancel;
     },
-    [enableLocalDatastore, localDatastorePinName, enableLiveQuery, queryId, parseServerQuery]
+    [queryString, enableLocalDatastore, enableLiveQuery, queryId, parseServerQuery]
   );
 
   const subscribeLiveQuery = useCallback(
@@ -349,9 +468,33 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
       let liveQuerySubscription: Parse.LiveQuerySubscription | undefined;
       let cancelFindFromParseServer: (() => void) | undefined;
 
+      const loadAndPinObject = async (object: T) => {
+        dispatch(loadObject(queryId, object as T, (parseServerQuery as any)._order, (parseServerQuery as any)._limit));
+
+        if (enableLocalDatastore) {
+          try {
+            await object.pinWithName(queryString);
+          } catch (e) {
+            dispatch(fail(queryId, e));
+          }
+        }
+      };
+
+      const unloadAndUnPinObject = async (object: T) => {
+        dispatch(unloadObject(queryId, object as T));
+
+        if (enableLocalDatastore) {
+          try {
+            await object.unPinWithName(queryString);
+          } catch (e) {
+            dispatch(fail(queryId, e));
+          }
+        }
+      };
+
       const subscribe = async () => {
         try {
-          liveQuerySubscription = await query.subscribe();
+          liveQuerySubscription = await parseServerQuery.subscribe();
         } catch (e) {
           dispatch(fail(queryId, e));
 
@@ -371,6 +514,12 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
         liveQuerySubscription.on('close', () => {
           dispatch(setIsLive(queryId, false));
         });
+
+        liveQuerySubscription.on('create', object => loadAndPinObject(object as T));
+        liveQuerySubscription.on('update', object => loadAndPinObject(object as T));
+        liveQuerySubscription.on('enter', object => loadAndPinObject(object as T));
+        liveQuerySubscription.on('leave', object => unloadAndUnPinObject(object as T));
+        liveQuerySubscription.on('delete', object => unloadAndUnPinObject(object as T));
       };
 
       const subscribePromise = subscribe();
@@ -391,7 +540,7 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
 
       return unsubscribe;
     },
-    [query, queryId, findFromParseServer]
+    [queryString, enableLocalDatastore, queryId, parseServerQuery, findFromParseServer]
   );
 
   useEffect(
@@ -431,6 +580,7 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
     isLive,
     isSyncing,
     objects,
+    count,
     error,
     reload
   };

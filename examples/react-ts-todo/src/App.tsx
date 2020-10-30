@@ -6,6 +6,7 @@ import './App.css';
 
 Parse.serverURL = 'http://localhost:1337/parse';
 Parse.initialize('APPLICATION_ID', 'JAVASCRIPT_KEY');
+Parse.enableLocalDatastore();
 
 function App() {
   const [
