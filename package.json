@@ -1,6 +1,19 @@
 {
   "name": "root",
   "private": true,
+  "scripts": {
+    "clean": "lerna clean --yes && rm -r node_modules",
+    "postinstall": "lerna bootstrap",
+    "dev-parse-react-base": "lerna run dev --scope @parse/react-base --stream",
+    "dev-parse-react": "lerna run dev --scope @parse/react --stream",
+    "dev-parse-react-native": "lerna run dev --scope @parse/react-native --stream",
+    "dev": "lerna run dev --parallel --stream",
+    "start-backend-todo": "lerna run start --scope backend-todo --stream",
+    "start-react-ts-todo": "lerna run start --scope react-ts-todo --stream",
+    "start-react-native-ts-todo": "lerna run start --scope react-native-ts-todo --stream",
+    "start-examples": "lerna run start --parallel --stream",
+    "start": "npm run dev & npm run start-examples"
+  },
   "devDependencies": {
     "lerna": "^3.16.4"
   }

@@ -1,5 +1,3 @@
-import Parse from 'parse';
-
 export const compareParseObjects = <T extends Parse.Object<Parse.Attributes>>(
   a: T,
   b: T,

@@ -1,0 +1,15 @@
+{
+  "name": "backend-todo",
+  "private": true,
+  "scripts": {
+    "start-mongodb-runner": "mongodb-runner start",
+    "start-parse-server": "parse-server ./parse-server-config.json",
+    "start-parse-dashboard": "parse-dashboard --config ./parse-dashboard-config.json",
+    "start": "npm run start-mongodb-runner && npm run start-parse-server & npm run start-parse-dashboard"
+  },
+  "devDependencies": {
+    "mongodb-runner": "^4.8.0",
+    "parse-dashboard": "^2.1.0",
+    "parse-server": "^4.4.0"
+  }
+}

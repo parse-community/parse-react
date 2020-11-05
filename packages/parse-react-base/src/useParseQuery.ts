@@ -1,5 +1,4 @@
 import { useRef, useReducer, useMemo, useCallback, useEffect } from 'react';
-import Parse from 'parse';
 import { compareParseObjects } from './util';
 
 interface ResultState<T extends Parse.Object<Parse.Attributes>> {

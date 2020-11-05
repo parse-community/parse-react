@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import Parse from 'parse';
-import { useParseQuery } from '@parse/react';
+import { initializeParse, useParseQuery } from '@parse/react';
 import logo from './logo.svg';
 import './App.css';
 
-Parse.serverURL = 'http://localhost:1337/parse';
-Parse.initialize('APPLICATION_ID', 'JAVASCRIPT_KEY');
-Parse.enableLocalDatastore();
+initializeParse(
+  'http://localhost:1337/parse',
+  'APPLICATION_ID',
+  'JAVASCRIPT_KEY'
+);
 
 function App() {
   const [
