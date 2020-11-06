@@ -1,0 +1,33 @@
+{
+  "name": "react-native-ts-todo",
+  "private": true,
+  "main": "./node_modules/expo/AppEntry.js",
+  "scripts": {
+    "cp-parse-react-native": "rm -rf ./node_modules/@parse/react-native-temp && mkdir -p ./node_modules/@parse/react-native-temp && cp -r ./node_modules/@parse/react-native/* ./node_modules/@parse/react-native-temp/ && rm -rf ./node_modules/@parse/react-native && mv ./node_modules/@parse/react-native-temp ./node_modules/@parse/react-native",
+    "postinstall": "npm run cp-parse-react-native",
+    "watch-parse-react-native": "watch ../../packages/parse-react-native -d 'npm run cp-parse-react-native'",
+    "start": "npm run watch-parse-react-native & expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "eject": "expo eject"
+  },
+  "dependencies": {
+    "@parse/react-native": "^0.0.0",
+    "expo": "~39.0.2",
+    "expo-status-bar": "~1.0.2",
+    "parse": "^2.17.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.4.tar.gz",
+    "react-native-web": "~0.13.12"
+  },
+  "devDependencies": {
+    "@babel/core": "~7.9.0",
+    "@types/parse": "^2.12.7",
+    "@types/react": "~16.9.35",
+    "@types/react-dom": "~16.9.8",
+    "@types/react-native": "~0.63.2",
+    "typescript": "~3.9.5"
+  }
+}
