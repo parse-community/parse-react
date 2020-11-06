@@ -51,7 +51,9 @@ function App() {
         {objects && (
           <ul>
             {objects.map(object => (
-              <li>{object.get('title')}</li>
+              <li key={object.id}>
+                {object.get('title')}
+              </li>
             ))}
           </ul>
         )}
