@@ -4,14 +4,10 @@ import { StyleSheet, Text, View } from 'react-native';
 import { initializeParse, useParseQuery } from '@parse/react-native';
 
 initializeParse(
-  'http://127.0.0.1:1337/parse',
+  'http://10.0.0.131:1337/parse',
   'APPLICATION_ID',
   'JAVASCRIPT_KEY'
 );
-
-(Parse as any).LiveQuery.on('error', (error: Error) => {
-  console.log(error && error.message || error);
-});
 
 export default function App() {
   const [
