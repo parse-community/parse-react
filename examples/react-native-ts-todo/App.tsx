@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import { initializeParse, useParseQuery } from '@parse/react-native';
 
 initializeParse(
@@ -33,6 +33,12 @@ export default function App() {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
+      <View>
+        <Button
+          onPress={() => setHideDone(!hideDone)}
+          title={`${hideDone ? 'Unhide' : 'Hide'} done todos`}
+        />
+      </View>
       {isLoading && (
         <View>
           <Text>Loading...</Text>
@@ -64,6 +70,12 @@ export default function App() {
           <Text>{error.message}</Text>
         </View>
       )}
+      <View>
+        <Button
+          onPress={reload}
+          title="Reload"
+        />
+      </View>
     </View>
   );
 }
