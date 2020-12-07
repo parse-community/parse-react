@@ -5,7 +5,7 @@
   "scripts": {
     "cp-parse-react-native": "rm -rf ./node_modules/@parse/react-native-temp && mkdir -p ./node_modules/@parse/react-native-temp && cp -r ./node_modules/@parse/react-native/* ./node_modules/@parse/react-native-temp/ && rm -rf ./node_modules/@parse/react-native && mv ./node_modules/@parse/react-native-temp ./node_modules/@parse/react-native",
     "postinstall": "npm run cp-parse-react-native",
-    "watch-parse-react-native": "watch ../../packages/parse-react-native -d 'npm run cp-parse-react-native'",
+    "watch-parse-react-native": "watch 'cp -r ../../packages/parse-react-native/dist/* ./node_modules/@parse/react-native/dist/' ../../packages/parse-react-native/dist/",
     "start": "npm run watch-parse-react-native & expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",

@@ -1,6 +1,7 @@
 {
   "appId": "APPLICATION_ID",
   "masterKey": "MASTER_KEY",
+  "clientKey": "CLIENT_KEY",
   "javascriptKey": "JAVASCRIPT_KEY",
   "databaseURI": "mongodb://localhost/test",
   "startLiveQueryServer": true,

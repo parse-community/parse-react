@@ -2,17 +2,27 @@
   "name": "next-ts-todo",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3031",
+    "cp-parse-react-ssr": "rm -rf ./node_modules/@parse/react-ssr-temp && mkdir -p ./node_modules/@parse/react-ssr-temp && cp -r ./node_modules/@parse/react-ssr/* ./node_modules/@parse/react-ssr-temp/ && rm -rf ./node_modules/@parse/react-ssr && mv ./node_modules/@parse/react-ssr-temp ./node_modules/@parse/react-ssr",
+    "postinstall": "npm run cp-parse-react-ssr",
+    "watch-parse-react-ssr": "watch 'cp -r ../../packages/parse-react-ssr/dist/* ./node_modules/@parse/react-ssr/dist/' ../../packages/parse-react-ssr/dist/",
+    "dev": "npm run watch-parse-react-ssr & next dev -p 3031",
     "build": "next build",
     "start": "next start -p 3031"
   },
   "dependencies": {
+    "@parse/react-ssr": "^0.0.0",
+    "bootstrap": "^4.5.3",
+    "jquery": "^3.5.1",
     "next": "10.0.1",
+    "parse": "^2.18.0",
+    "popper.js": "^1.16.1",
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "tslib": "^2.0.3"
   },
   "devDependencies": {
     "@types/react": "^16.9.56",
-    "typescript": "^4.0.5"
+    "typescript": "^4.0.5",
+    "watch": "^1.0.2"
   }
 }

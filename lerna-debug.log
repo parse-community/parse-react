@@ -1,13 +1,11 @@
 0 silly argv {
 0 silly argv   _: [ 'add' ],
-0 silly argv   dev: true,
-0 silly argv   D: true,
-0 silly argv   globs: [ './packages/parse-react-native' ],
+0 silly argv   globs: [ './examples/next-ts-todo' ],
 0 silly argv   lernaVersion: '3.22.1',
 0 silly argv   '$0': 'lerna',
-0 silly argv   pkg: '@babel/runtine'
+0 silly argv   pkg: '@parse/reactssr'
 0 silly argv }
 1 notice cli v3.22.1
 2 verbose rootPath /Users/davimacedo/Projects/parse-react
-3 error Error: 404 Not Found - GET https://registry.npmjs.org/@babel%2fruntine - Not found
+3 error Error: 404 Not Found - GET https://registry.npmjs.org/@parse%2freactssr - Not found
 3 error     at /Users/davimacedo/Projects/parse-react/node_modules/@evocateur/npm-registry-fetch/check-response.js:104:15

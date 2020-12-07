@@ -6,10 +6,10 @@ import {
 
 const isServer = typeof window === 'undefined';
 
-if (isServer) {
-  global.Parse = require('parse/node');
-} else {
+if ((process as any).browser) {
   global.Parse = require('parse');
+} else {
+  global.Parse = require('parse/node');
 }
 
 export const initializeParse = (serverURL: string, applicationId: string, javascriptKey: string) => {

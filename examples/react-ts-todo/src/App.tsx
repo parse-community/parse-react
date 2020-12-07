@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { initializeParse, useParseQuery } from '@parse/react';
 import logo from './logo.svg';
 import './App.css';
@@ -15,11 +15,18 @@ function App() {
     setHideDone
   ] = useState(false);
 
-  const query = new Parse.Query('Todo');
+  const query = useMemo(
+    () => {
+      const query = new Parse.Query('Todo');
 
-  if (hideDone) {
-    query.notEqualTo('done', true);
-  }
+      if (hideDone) {
+        query.notEqualTo('done', true);
+      }
+
+      return query;
+    },
+    [hideDone]
+  );
 
   const {
     isLive,
