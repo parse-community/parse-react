@@ -15,15 +15,17 @@ function App() {
     setHideDone
   ] = useState(false);
 
-  const query = useMemo(
+  const parseQuery = useMemo(
     () => {
-      const query = new Parse.Query('Todo');
+      const parseQuery = new Parse.Query('Todo');
 
       if (hideDone) {
-        query.notEqualTo('done', true);
+        parseQuery.notEqualTo('done', true);
       }
 
-      return query;
+      (parseQuery as any).withCount();
+
+      return parseQuery;
     },
     [hideDone]
   );
@@ -32,10 +34,11 @@ function App() {
     isLive,
     isLoading,
     isSyncing,
-    objects,
+    results,
+    count,
     error,
     reload
-  } = useParseQuery(query);
+  } = useParseQuery(parseQuery);
 
   return (
     <div className="App">
@@ -55,15 +58,16 @@ function App() {
         {isSyncing && (
           <p>Syncing...</p>
         )}
-        {objects && (
+        {results && (
           <ul>
-            {objects.map(object => (
-              <li key={object.id}>
-                {object.get('title')}
+            {results.map(result => (
+              <li key={result.id}>
+                {result.get('title')}
               </li>
             ))}
           </ul>
         )}
+        <p>{count}</p>
         {error && (
           <p>{error.message}</p>
         )}

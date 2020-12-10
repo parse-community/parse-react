@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from 'react';
 import {
   UseParseQueryOptions,
   UseParseQueryResult,
@@ -20,16 +21,126 @@ export const initializeParse = (serverURL: string, applicationId: string, javasc
   Parse.initialize(applicationId, javascriptKey);
 };
 
-export const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
-  query: Parse.Query<T>,
-  options?: UseParseQueryOptions
-): UseParseQueryResult<T> => useParseQueryBase(
-  query,
-  {
-    ...(options || {}),
-    ...(isServer ? {
-      enableLocalDatastore: false,
-      enableLiveQuery: false
-    } : {})
+export interface EncodedParseQuery {
+  className: string,
+  query: object,
+  findResult?: object,
+  findError?: object
+}
+
+export const encodeParseQuery = async <T extends Parse.Object<Parse.Attributes>>(
+  query: Parse.Query<T>
+): Promise<EncodedParseQuery> => {
+  let findResult, findError;
+
+  try {
+    findResult = await query.find();
+  } catch (e) {
+    findError = e;
   }
-);
+
+  const encodedParseQuery = {
+    className: query.className,
+    query: query.toJSON(),
+    findResult: findResult && (Parse as any)._encode(findResult) || undefined,
+    findError: findError && (Parse as any)._encode(findError) || undefined
+  };
+
+  if (!encodedParseQuery.findResult) {
+    delete encodedParseQuery.findResult;
+  }
+  if (!encodedParseQuery.findError) {
+    delete encodedParseQuery.findError;
+  }
+
+  return encodedParseQuery;
+};
+
+export const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
+  query: Parse.Query<T> | EncodedParseQuery,
+  options?: UseParseQueryOptions<T>
+): UseParseQueryResult<T> => {
+  if (
+    query instanceof Parse.Query &&
+    isServer
+  ) {
+    throw new Error(
+      'An EncodedParseQuery must be passed when running in the server side. Use the encodeParseQuery function.'
+    );
+  }
+
+  const {
+    findResult,
+    findError,
+    decodedQuery
+  } = useMemo(
+    () => {
+      if (query instanceof Parse.Query) {
+        return {
+          decodedQuery: query
+        };
+      } else {
+        return {
+          findResult: query.findResult && (Parse as any)._decode(query.findResult) || undefined,
+          findError: query.findError && (Parse as any)._decode(query.findError) || undefined,
+          decodedQuery: Parse.Query.fromJSON(
+            query.className,
+            query.query
+          ) as Parse.Query<T>
+        };
+      }
+    },
+    [query]
+  );
+
+  const {
+    findResultResults,
+    findResultCount
+  } = useMemo(
+    () => ({
+      findResultResults: findResult && (findResult.results || findResult) || undefined,
+      findResultCount: findResult && findResult.count || undefined
+    }),
+    [findResult]
+  );
+
+  const serverReload = useCallback(
+    () => {
+      throw new Error(
+        'The reload function can not be used in the server side.'
+      );
+    },
+    []
+  )
+
+  const serverResult = useMemo(
+    () => ({
+      isLoading: false,
+      isLive: false,
+      isSyncing: false,
+      results: findResultResults,
+      count: findResultCount,
+      error: findError,
+      reload: serverReload
+    }),
+    [findResultResults, findResultCount, findError, serverReload]
+  );
+
+  if (isServer) {
+    return serverResult;
+  }
+
+  return useParseQueryBase(
+    decodedQuery,
+    {
+      enableLocalDatastore: options && options.enableLocalDatastore || undefined,
+      enableLiveQuery: options && options.enableLiveQuery || undefined,
+      initialLoad: options && options.initialLoad ||
+        findResult && {
+          results: findResultResults,
+          count: findResultCount
+        } ||
+        undefined
+    }
+  );
+};

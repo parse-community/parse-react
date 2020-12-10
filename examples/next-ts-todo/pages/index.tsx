@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import Head from 'next/head'
-import { initializeParse, useParseQuery } from '@parse/react-ssr';
+import { initializeParse, encodeParseQuery, useParseQuery } from '@parse/react-ssr';
 
 initializeParse(
   'http://localhost:1337/parse',
@@ -8,21 +8,51 @@ initializeParse(
   'JAVASCRIPT_KEY'
 );
 
-export default function Home() {
+const createParseQuery = hideDone => {
+  const parseQuery = new Parse.Query('Todo');
+
+  if (hideDone) {
+    parseQuery.notEqualTo('done', true);
+  }
+
+  (parseQuery as any).withCount();
+
+  return parseQuery;
+};
+
+export default function Home({ initialHideDone, initialParseQuery }) {
   const [
-    hideDone,
-    setHideDone
-  ] = useState(false);
+    {
+      hideDone,
+      parseQuery
+    },
+    setParseQueryState
+  ] = useState({
+    hideDone: initialHideDone,
+    parseQuery: initialParseQuery
+  });
 
-  const query = useMemo(
+  useEffect(
     () => {
-      const query = new Parse.Query('Todo');
-
-      if (hideDone) {
-        query.notEqualTo('done', true);
+      if (
+        hideDone !== initialHideDone ||
+        parseQuery !== initialParseQuery
+      ) {
+        setParseQueryState({
+          hideDone: initialHideDone,
+          parseQuery: initialParseQuery
+        });
       }
+    },
+    [initialHideDone, initialParseQuery]
+  );
 
-      return query;
+  const toggleHideDone = useCallback(
+    () => {
+      setParseQueryState({
+        hideDone: !hideDone,
+        parseQuery: createParseQuery(!hideDone)
+      });
     },
     [hideDone]
   );
@@ -31,10 +61,11 @@ export default function Home() {
     isLive,
     isLoading,
     isSyncing,
-    objects,
+    results,
+    count,
     error,
     reload
-  } = useParseQuery(query);
+  } = useParseQuery(parseQuery);
 
   return (
     <>
@@ -42,6 +73,47 @@ export default function Home() {
         <title>Todo Example using @parse/ssr on Next.js (Typescript)</title>
         <link rel="icon" href="/favicon-32x32.png" />
       </Head>
+      <button onClick={toggleHideDone}>
+        {hideDone ? 'Unhide' : 'Hide'} done todos
+      </button>
+      {isLoading && (
+        <p>Loading...</p>
+      )}
+      {isLive && (
+        <p>Live!</p>
+      )}
+      {isSyncing && (
+        <p>Syncing...</p>
+      )}
+      {results && (
+        <ul>
+          {results.map(result => (
+            <li key={result.id}>
+              {result.get('title')}
+            </li>
+          ))}
+        </ul>
+      )}
+      <p>{count}</p>
+      {error && (
+        <p>{error.message}</p>
+      )}
+      <button
+        onClick={reload}
+      >
+        Reload
+      </button>
     </>
   );
 };
+
+export async function getServerSideProps() {
+  const initialHideDone = false;
+
+  return {
+    props: {
+      initialHideDone,
+      initialParseQuery: await encodeParseQuery(createParseQuery(initialHideDone))
+    },
+  }
+}

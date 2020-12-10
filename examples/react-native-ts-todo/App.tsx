@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { initializeParse, useParseQuery } from '@parse/react-native';
 
@@ -15,20 +15,30 @@ export default function App() {
     setHideDone
   ] = useState(false);
 
-  const query = new Parse.Query('Todo');
+  const parseQuery = useMemo(
+    () => {
+      const parseQuery = new Parse.Query('Todo');
 
-  if (hideDone) {
-    query.notEqualTo('done', true);
-  }
+      if (hideDone) {
+        parseQuery.notEqualTo('done', true);
+      }
+
+      (parseQuery as any).withCount();
+
+      return parseQuery;
+    },
+    [hideDone]
+  );
 
   const {
     isLive,
     isLoading,
     isSyncing,
-    objects,
+    results,
+    count,
     error,
     reload
-  } = useParseQuery(query);
+  } = useParseQuery(parseQuery);
 
   return (
     <View style={styles.container}>
@@ -54,17 +64,20 @@ export default function App() {
           <Text>Syncing...</Text>
         </View>
       )}
-      {objects && (
+      {results && (
         <View>
-          {objects.map(object => (
+          {results.map(result => (
             <View>
-              <Text key={object.id}>
-                {object.get('title')}
+              <Text key={result.id}>
+                {result.get('title')}
               </Text>
             </View>
           ))}
         </View>
       )}
+      <View>
+        <Text>{count}</Text>
+      </View>
       {error && (
         <View>
           <Text>{error.message}</Text>
