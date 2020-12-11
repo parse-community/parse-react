@@ -8,7 +8,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{secrets.GITHUB_TOKEN}}
           fetch-depth: "0"
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - uses: actions/setup-node@v1
@@ -17,4 +16,5 @@ jobs:
       - run: npm ci
       - run: npm run prerelease
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
