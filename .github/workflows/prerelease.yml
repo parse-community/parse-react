@@ -7,7 +7,6 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - name: Configure CI Git User
         run: |
           git config --global user.email "admin@parseplatform.org"
