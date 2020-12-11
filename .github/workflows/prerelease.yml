@@ -8,9 +8,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-      - run: |
-        git config --global user.email "admin@parseplatform.org"
-        git config --global user.name "Parse Community"
+      - name: Configure CI Git User
+        run: |
+          git config --global user.email "admin@parseplatform.org"
+          git config --global user.name "Parse Community"
       - uses: actions/setup-node@v1
         with:
           node-version: 12
