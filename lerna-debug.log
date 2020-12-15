@@ -3,9 +3,19 @@
 0 silly argv   globs: [ './examples/next-ts-todo' ],
 0 silly argv   lernaVersion: '3.22.1',
 0 silly argv   '$0': 'lerna',
-0 silly argv   pkg: '@parse/reactssr'
+0 silly argv   pkg: '@parse/react-ssr@next'
 0 silly argv }
 1 notice cli v3.22.1
 2 verbose rootPath /Users/davimacedo/Projects/parse-react
-3 error Error: 404 Not Found - GET https://registry.npmjs.org/@parse%2freactssr - Not found
-3 error     at /Users/davimacedo/Projects/parse-react/node_modules/@evocateur/npm-registry-fetch/check-response.js:104:15
+3 error TypeError: Invalid comparator: next
+3 error     at Comparator.parse (/Users/davimacedo/Projects/parse-react/node_modules/semver/semver.js:794:11)
+3 error     at new Comparator (/Users/davimacedo/Projects/parse-react/node_modules/semver/semver.js:777:8)
+3 error     at Range.<anonymous> (/Users/davimacedo/Projects/parse-react/node_modules/semver/semver.js:975:12)
+3 error     at Array.map (<anonymous>)
+3 error     at Range.parseRange (/Users/davimacedo/Projects/parse-react/node_modules/semver/semver.js:974:13)
+3 error     at Range.<anonymous> (/Users/davimacedo/Projects/parse-react/node_modules/semver/semver.js:917:17)
+3 error     at Array.map (<anonymous>)
+3 error     at new Range (/Users/davimacedo/Projects/parse-react/node_modules/semver/semver.js:916:40)
+3 error     at Function.intersects (/Users/davimacedo/Projects/parse-react/node_modules/semver/semver.js:1543:8)
+3 error     at AddCommand.packageSatisfied (/Users/davimacedo/Projects/parse-react/node_modules/@lerna/add/index.js:226:19)
+3 error     at AddCommand.initialize (/Users/davimacedo/Projects/parse-react/node_modules/@lerna/add/index.js:41:31)

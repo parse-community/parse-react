@@ -14,7 +14,7 @@
     "dev": "npm run start"
   },
   "dependencies": {
-    "@parse/react-native": "^0.0.1-alpha.1",
+    "@parse/react-native": "^0.0.1-alpha.3",
     "expo": "~39.0.2",
     "expo-status-bar": "~1.0.2",
     "parse": "^2.17.0",
