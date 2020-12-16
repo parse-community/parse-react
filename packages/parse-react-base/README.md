@@ -18,7 +18,7 @@
 
 <br>
 
-This is a base implementation and not intended to be used directly. Please use one of the specilized libraries for:
+This is a base implementation and not intended to be used directly. Please use one of the specialized libraries for:
 - [React](https://github.com/parse-community/parse-react/tree/master/packages/parse-react)
 - [React Native](https://github.com/parse-community/parse-react/tree/master/packages/parse-react-native)
 - [React with SSR](https://github.com/parse-community/parse-react/tree/master/packages/parse-react-ssr)
