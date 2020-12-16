@@ -15,7 +15,7 @@
     "dev-next-ts-todo": "lerna run dev --scope next-ts-todo --stream",
     "dev-examples": "lerna run dev --ignore '@parse/*' --parallel --stream",
     "dev": "npm run dev-packages & npm run dev-examples",
-    "prerelease": "lerna publish prerelease --no-verify-access --yes"
+    "prerelease": "lerna publish prerelease --yes"
   },
   "devDependencies": {
     "lerna": "^3.16.4"

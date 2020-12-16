@@ -16,8 +16,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-          registry-url: https://registry.npmjs.org/
       - run: npm ci
-      - run: npm run prerelease
+      - run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
         env:
-          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm run prerelease
