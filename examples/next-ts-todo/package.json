@@ -10,7 +10,7 @@
     "start": "next start -p 3031"
   },
   "dependencies": {
-    "@parse/react-ssr": "^0.0.1-alpha.3",
+    "@parse/react-ssr": "^0.0.1-alpha.8",
     "bootstrap": "^4.5.3",
     "jquery": "^3.5.1",
     "next": "10.0.1",
