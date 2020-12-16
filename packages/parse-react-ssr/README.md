@@ -10,6 +10,8 @@
   An <b>experimental</b> React library that gives you access to the powerful Parse Server backend from your React with SSR applications (e.g. Next.js applications).
 </p>
 
-<a href="https://www.npmjs.com/package/@parse/react-ssr">
-  <img alt="NPM Version" src="https://badge.fury.io/js/%40parse%2Freact-ssr.svg" />
-</a>
+<p align="center">
+  <a href="https://www.npmjs.com/package/@parse/react-ssr">
+    <img alt="NPM Version" src="https://badge.fury.io/js/%40parse%2Freact-ssr.svg" />
+  </a>
+</p>

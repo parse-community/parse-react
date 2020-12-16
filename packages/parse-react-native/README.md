@@ -10,6 +10,8 @@
   An <b>experimental</b> React Native library that gives you access to the powerful Parse Server backend from your React Native applications.
 </p>
 
-<a href="https://www.npmjs.com/package/@parse/react-native">
-  <img alt="NPM Version" src="https://badge.fury.io/js/%40parse%2Freact-native.svg" />
-</a>
+<p align="center">
+  <a href="https://www.npmjs.com/package/@parse/react-native">
+    <img alt="NPM Version" src="https://badge.fury.io/js/%40parse%2Freact-native.svg" />
+  </a>
+</p>

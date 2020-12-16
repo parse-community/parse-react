@@ -10,6 +10,8 @@
   An <b>experimental</b> React library that gives you access to the powerful Parse Server backend from your React applications.
 </p>
 
-<a href="https://www.npmjs.com/package/@parse/react">
-  <img alt="NPM Version" src="https://badge.fury.io/js/%40parse%2Freact.svg" />
-</a>
+<p align="center">
+  <a href="https://www.npmjs.com/package/@parse/react">
+    <img alt="NPM Version" src="https://badge.fury.io/js/%40parse%2Freact.svg" />
+  </a>
+</p>
