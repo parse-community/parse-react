@@ -7,7 +7,7 @@
 <h2 align="center">@parse/react-native <i>(alpha)</i></h2>
 
 <p align="center">
-  An <b>experimental</b> React Native library that gives you access to the powerful Parse Server backend from your React Native applications.
+  An <b>experimental</b> package that provides you easy, real-time, offline-first interaction with the powerful [Parse Server](https://github.com/parse-community/parse-server) backend from your React Native applications.
 </p>
 
 <p align="center">
