@@ -7,7 +7,7 @@
 <h2 align="center">@parse/react <i>(alpha)</i></h2>
 
 <p align="center">
-  An <b>experimental</b> package that provides you easy, real-time, offline-first interaction with the powerful [Parse Server](https://github.com/parse-community/parse-server) backend from your React applications.
+  An <b>experimental</b> package that provides you easy, real-time, offline-first interaction with the powerful <a href="https://github.com/parse-community/parse-server">Parse Server</a> backend from your React applications.
 </p>
 
 <p align="center">

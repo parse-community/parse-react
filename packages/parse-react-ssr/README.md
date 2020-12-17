@@ -7,7 +7,7 @@
 <h2 align="center">@parse/react-ssr <i>(alpha)</i></h2>
 
 <p align="center">
-  An <b>experimental</b> package that provides you easy, real-time, offline-first interaction with the powerful [Parse Server](https://github.com/parse-community/parse-server) backend from your React with SSR applications (e.g. Next.js).
+  An <b>experimental</b> package that provides you easy, real-time, offline-first interaction with the powerful <a href="https://github.com/parse-community/parse-server">Parse Server</a> backend from your React with SSR applications (e.g. Next.js).
 </p>
 
 <p align="center">

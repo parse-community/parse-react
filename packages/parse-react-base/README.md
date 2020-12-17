@@ -7,7 +7,7 @@
 <h2 align="center">@parse/react-base <i>(alpha)</i></h2>
 
 <p align="center">
-  An <b>experimental</b> base implementation to support the specialized packages for React, React Native, and React with SSR (e.g. Next.js) applications. These packages provide you easy, real-time, offline-first interaction with the powerful [Parse Server](https://github.com/parse-community/parse-server) backend.
+  An <b>experimental</b> base implementation to support the specialized packages for React, React Native, and React with SSR (e.g. Next.js) applications. These packages provide you easy, real-time, offline-first interaction with the powerful <a href="https://github.com/parse-community/parse-server">Parse Server</a> backend.
 </p>
 
 <p align="center">
