@@ -4,6 +4,19 @@
   "publishConfig": {
     "access": "public"
   },
+  "author": "Parse Community <admin@parseplatform.org>",
+  "description": "An experimental package that provides you easy, real-time, offline-first interaction with the powerful Parse Server backend from your React applications.",
+  "keywords": [
+    "react",
+    "parse"
+  ],
+  "homepage": "https://parseplatform.org",  
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/parse-community/parse-react",
+    "directory": "packages/react"
+  },
+  "bugs": "https://github.com/parse-community/parse-react/issues",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
