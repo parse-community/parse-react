@@ -7,9 +7,11 @@
 <h2 align="center">@parse/react-ssr <i>(alpha)</i></h2>
 
 <p align="center">
-  An <b>experimental</b> React library that gives you access to the powerful Parse Server backend from your React with SSR applications (e.g. Next.js applications).
+  An <b>experimental</b> package that provides you easy, real-time, offline-first interaction with the powerful <a href="https://github.com/parse-community/parse-server">Parse Server</a> backend from your React with SSR applications (e.g. Next.js).
 </p>
 
-<a href="https://www.npmjs.com/package/@parse/react-ssr">
-  <img alt="NPM Version" src="https://badge.fury.io/js/%40parse%2Freact-ssr.svg" />
-</a>
+<p align="center">
+  <a href="https://www.npmjs.com/package/@parse/react-ssr">
+    <img alt="NPM Version" src="https://badge.fury.io/js/%40parse%2Freact-ssr.svg" />
+  </a>
+</p>

@@ -4,6 +4,22 @@
   "publishConfig": {
     "access": "public"
   },
+  "author": "Parse Community <admin@parseplatform.org>",
+  "description": "An experimental base implementation to support the specialized packages for React, React Native, and React with SSR (e.g. Next.js) applications. These packages provide you easy, real-time, offline-first interaction with the powerful Parse Server backend.",
+  "keywords": [
+    "react",
+    "react native",
+    "ssr",
+    "next.js",
+    "parse"
+  ],
+  "homepage": "https://parseplatform.org",  
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/parse-community/parse-react",
+    "directory": "packages/react-base"
+  },
+  "bugs": "https://github.com/parse-community/parse-react/issues",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

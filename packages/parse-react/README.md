@@ -7,9 +7,11 @@
 <h2 align="center">@parse/react <i>(alpha)</i></h2>
 
 <p align="center">
-  An <b>experimental</b> React library that gives you access to the powerful Parse Server backend from your React applications.
+  An <b>experimental</b> package that provides you easy, real-time, offline-first interaction with the powerful <a href="https://github.com/parse-community/parse-server">Parse Server</a> backend from your React applications.
 </p>
 
-<a href="https://www.npmjs.com/package/@parse/react">
-  <img alt="NPM Version" src="https://badge.fury.io/js/%40parse%2Freact.svg" />
-</a>
+<p align="center">
+  <a href="https://www.npmjs.com/package/@parse/react">
+    <img alt="NPM Version" src="https://badge.fury.io/js/%40parse%2Freact.svg" />
+  </a>
+</p>

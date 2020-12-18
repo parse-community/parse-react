@@ -7,9 +7,11 @@
 <h2 align="center">@parse/react-native <i>(alpha)</i></h2>
 
 <p align="center">
-  An <b>experimental</b> React Native library that gives you access to the powerful Parse Server backend from your React Native applications.
+  An <b>experimental</b> package that provides you easy, real-time, offline-first interaction with the powerful <a href="https://github.com/parse-community/parse-server">Parse Server</a> backend from your React Native applications.
 </p>
 
-<a href="https://www.npmjs.com/package/@parse/react-native">
-  <img alt="NPM Version" src="https://badge.fury.io/js/%40parse%2Freact-native.svg" />
-</a>
+<p align="center">
+  <a href="https://www.npmjs.com/package/@parse/react-native">
+    <img alt="NPM Version" src="https://badge.fury.io/js/%40parse%2Freact-native.svg" />
+  </a>
+</p>
