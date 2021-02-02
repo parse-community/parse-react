@@ -24,13 +24,11 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "dev": "tsc --build ./tsconfig.json --watch",
-    "build": "tsc --build ./tsconfig.json",
-    "postinstall": "npm run build"
+    "build": "tsc --build ./tsconfig.json"
   },
   "peerDependencies": {
     "parse": ">= 2.17.0",
