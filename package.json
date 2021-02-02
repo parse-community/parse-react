@@ -4,7 +4,9 @@
   "license": "MIT",
   "scripts": {
     "clean": "lerna clean --yes && rm -r node_modules",
-    "postinstall": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap",
+    "build": "lerna run build --scope '@parse/*' --stream",
+    "postinstall": "npm run bootstrap && npm run build",
     "dev-parse-react-base": "lerna run dev --scope @parse/react-base --stream",
     "dev-parse-react": "lerna run dev --scope @parse/react --stream",
     "dev-parse-react-native": "lerna run dev --scope @parse/react-native --stream",
