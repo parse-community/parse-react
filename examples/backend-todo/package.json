@@ -5,7 +5,7 @@
     "start-mongodb-runner": "mongodb-runner start",
     "start-parse-server": "parse-server ./parse-server-config.json",
     "start-parse-dashboard": "parse-dashboard --config ./parse-dashboard-config.json",
-    "start": "npm run start-mongodb-runner && npm run start-parse-server & npm run start-parse-dashboard",
+    "start": "npm run start-mongodb-runner && (npm run start-parse-server & npm run start-parse-dashboard)",
     "dev": "npm run start"
   },
   "devDependencies": {
