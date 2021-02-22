@@ -48,11 +48,17 @@ const SomeComponent = () => {
     isLive, // Indicates that Parse Live Query is connected
     isLoading, // Indicates that the initial load is being processed
     isSyncing, // Indicates that the library is getting the latest data from Parse Server
-    results, // Stores the current results
+    results, // Stores the current results in an array of Parse Objects
     count, // Stores the current results count
     error, // Stores any error
     reload // Function that can be used to reload the data
-  } = useParseQuery(parseQuery);
+  } = useParseQuery(
+    parseQuery, // The Parse Query to be used
+    {
+      enableLocalDatastore: true, // Enables cache in local datastore (default: true)
+      enableLiveQuery: true // Enables live query for real-time update (default: true)
+    }
+  );
 
   return (
     <View>
@@ -100,6 +106,12 @@ const SomeComponent = () => {
   );
 };
 ```
+
+# Learning More
+
+This package aims to provide easier access to a Parse Server backend when developing React Native applications. It was built on top of the official [Parse JS SDK](https://docs.parseplatform.org/js/guide/). These two libraries should be used together and you can refer to the sdk documentation in order to learn more about Parse Objects, Parse Queries, and more:
+- Learn more about [Parse Objects](https://docs.parseplatform.org/js/guide/#objects);
+- Learn more about [Parse Queries](https://docs.parseplatform.org/js/guide/#queries).
 
 # Example
 
