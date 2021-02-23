@@ -22,3 +22,5 @@ npm install
 ```shell
 npm run dev-backend-todo & npm run dev-react-native-ts-todo
 ```
+
+This example uses Expo. After running the commands, follow the Expo instructions printed in your console to open the example app in an Android, iOS, or Web emulator/device. The example backend can be accessed using the Parse Dashboard at http://0.0.0.0:4040/.
