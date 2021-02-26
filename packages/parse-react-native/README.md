@@ -39,6 +39,8 @@ initializeParse(
 Now you are ready to use a Parse Query:
 
 ```js
+import React from 'react';
+import { Button, Text, View } from 'react-native';
 import { useParseQuery } from '@parse/react-native';
 
 const SomeComponent = () => {

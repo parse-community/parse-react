@@ -39,6 +39,7 @@ initializeParse(
 Now you are ready to use a Parse Query:
 
 ```js
+import React from 'react';
 import { useParseQuery } from '@parse/react';
 
 const SomeComponent = () => {
@@ -61,48 +62,35 @@ const SomeComponent = () => {
   );
 
   return (
-    <View>
+    <div>
       {isLoading && (
-        <View>
-          <Text>Loading...</Text>
-        </View>
+        <p>Loading...</p>
       )}
       {isLive && (
-        <View>
-          <Text>Live!</Text>
-        </View>
+        <p>Live!</p>
       )}
       {isSyncing && (
-        <View>
-          <Text>Syncing...</Text>
-        </View>
+        <p>Syncing...</p>
       )}
       {results && (
-        <View>
+        <ul>
           {results.map(result => (
-            <View>
-              <Text key={result.id}>
-                {result.get('someField')}
-              </Text>
-            </View>
+            <li key={result.id}>
+              {result.get('someField')}
+            </li>
           ))}
-        </View>
+        </ul>
       )}
-      <View>
-        <Text>{count}</Text>
-      </View>
+      <p>{count}</p>
       {error && (
-        <View>
-          <Text>{error.message}</Text>
-        </View>
+        <p>{error.message}</p>
       )}
-      <View>
-        <Button
-          onPress={reload}
-          title="Reload"
-        />
-      </View>
-    </View>
+      <button
+        onClick={reload}
+      >
+        Reload
+      </button>
+    </div>
   );
 };
 ```
