@@ -40,6 +40,7 @@ Now you are ready to use a Parse Query:
 
 ```js
 import React from 'react';
+import Parse from 'parse';
 import { useParseQuery } from '@parse/react';
 
 const SomeComponent = () => {
