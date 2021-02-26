@@ -18,7 +18,7 @@
 
 # Getting Started
 
-First, install the [parse](https://www.npmjs.com/package/parse) and [@parse/react-native](https://www.npmjs.com/package/@parse/react-native) npm modules into your react-native application.
+First, install the [parse](https://www.npmjs.com/package/parse) and [@parse/react-native](https://www.npmjs.com/package/@parse/react-native) npm modules into your React Native application.
 
 ```sh
 npm install parse @parse/react-native --save

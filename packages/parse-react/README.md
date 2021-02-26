@@ -15,3 +15,104 @@
     <img alt="NPM Version" src="https://badge.fury.io/js/%40parse%2Freact.svg" />
   </a>
 </p>
+
+# Getting Started
+
+First, install the [parse](https://www.npmjs.com/package/parse) and [@parse/react](https://www.npmjs.com/package/@parse/react) npm modules into your React application.
+
+```sh
+npm install parse @parse/react --save
+```
+
+In your `App.js` file, import and initialize Parse:
+
+```js
+import { initializeParse } from '@parse/react';
+
+initializeParse(
+  'YOUR_SERVER_URL',
+  'YOUR_APPLICATION_ID',
+  'YOUR_JAVASCRIPT_KEY'
+);
+```
+
+Now you are ready to use a Parse Query:
+
+```js
+import { useParseQuery } from '@parse/react';
+
+const SomeComponent = () => {
+  const parseQuery = new Parse.Query('SomeClass');
+
+  const {
+    isLive, // Indicates that Parse Live Query is connected
+    isLoading, // Indicates that the initial load is being processed
+    isSyncing, // Indicates that the library is getting the latest data from Parse Server
+    results, // Stores the current results in an array of Parse Objects
+    count, // Stores the current results count
+    error, // Stores any error
+    reload // Function that can be used to reload the data
+  } = useParseQuery(
+    parseQuery, // The Parse Query to be used
+    {
+      enableLocalDatastore: true, // Enables cache in local datastore (default: true)
+      enableLiveQuery: true // Enables live query for real-time update (default: true)
+    }
+  );
+
+  return (
+    <View>
+      {isLoading && (
+        <View>
+          <Text>Loading...</Text>
+        </View>
+      )}
+      {isLive && (
+        <View>
+          <Text>Live!</Text>
+        </View>
+      )}
+      {isSyncing && (
+        <View>
+          <Text>Syncing...</Text>
+        </View>
+      )}
+      {results && (
+        <View>
+          {results.map(result => (
+            <View>
+              <Text key={result.id}>
+                {result.get('someField')}
+              </Text>
+            </View>
+          ))}
+        </View>
+      )}
+      <View>
+        <Text>{count}</Text>
+      </View>
+      {error && (
+        <View>
+          <Text>{error.message}</Text>
+        </View>
+      )}
+      <View>
+        <Button
+          onPress={reload}
+          title="Reload"
+        />
+      </View>
+    </View>
+  );
+};
+```
+
+# Learning More
+
+This package aims to provide easier access to a Parse Server backend when developing React applications. It was built on top of the official [Parse JS SDK](https://docs.parseplatform.org/js/guide/). These two libraries should be used together and you can refer to the sdk documentation in order to learn more about Parse Objects, Parse Queries, and more:
+- Learn more about [Parse Objects](https://docs.parseplatform.org/js/guide/#objects);
+- Learn more about [Parse Queries](https://docs.parseplatform.org/js/guide/#queries).
+
+# Example
+
+See a [Todo List Example](https://github.com/parse-community/parse-react/tree/master/examples/react-ts-todo).
