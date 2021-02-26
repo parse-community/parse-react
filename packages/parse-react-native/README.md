@@ -107,6 +107,8 @@ const SomeComponent = () => {
     </View>
   );
 };
+
+export default SomeComponent;
 ```
 
 # Learning More
