@@ -1,6 +1,6 @@
 # Todo List Example for React Native (TS)
 
-A Todo List Example app built using React Native and Typescript to illustrate the usage of the [@parse/react-native](https://github.com/parse-community/parse-react/tree/moreReadmeImproment/packages/parse-react-native) library connecting to a Parse backend.
+A Todo List Example app built using React Native and Typescript to illustrate the usage of the [@parse/react-native](https://github.com/parse-community/parse-react/tree/master/packages/parse-react-native) library connecting to a Parse backend.
 
 ## Running this example
 
