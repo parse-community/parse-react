@@ -25,26 +25,20 @@ npm run dev-backend-todo
 
 4. Run the example apps in different terminals:
 
-- React (TS) App:
+- React (TS) App ([Learn more](https://github.com/parse-community/parse-react/tree/master/examples/react-ts-todo))
 
 ```shell
 npm run dev-react-ts-todo
 ```
 
-[Learn more](https://github.com/parse-community/parse-react/tree/master/examples/react-ts-todo)
-
-- React Native (TS) App:
+- React Native (TS) App ([Learn more](https://github.com/parse-community/parse-react/tree/master/examples/react-native-ts-todo))
 
 ```shell
 npm run dev-react-native-ts-todo
 ```
 
-[Learn more](https://github.com/parse-community/parse-react/tree/master/examples/react-native-ts-todo)
-
-- Next.js (TS) App:
+- Next.js (TS) App ([Learn more](https://github.com/parse-community/parse-react/tree/master/examples/next-ts-todo))
 
 ```shell
 npm run dev-next-ts-todo
 ```
-
-[Learn more](https://github.com/parse-community/parse-react/tree/master/examples/next-ts-todo)
