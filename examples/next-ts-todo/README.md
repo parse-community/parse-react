@@ -23,4 +23,4 @@ npm install
 npm run dev-backend-todo & npm run dev-next-ts-todo
 ```
 
-After running the commands, your default web browser should automatically open the example app at http://localhost:3000/. The example backend can be accessed using the Parse Dashboard at http://0.0.0.0:4040/.
+After running the commands, your default web browser should automatically open the example app at http://localhost:3031/. The example backend can be accessed using the Parse Dashboard at http://0.0.0.0:4040/.
