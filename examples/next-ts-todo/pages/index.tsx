@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Head from 'next/head'
 import { initializeParse, encodeParseQuery, useParseQuery } from '@parse/react-ssr';
 
