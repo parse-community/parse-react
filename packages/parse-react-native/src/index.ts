@@ -1,5 +1,5 @@
 import Parse from 'parse/react-native.js';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 global.Parse = Parse;
 
