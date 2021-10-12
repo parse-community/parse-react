@@ -64,9 +64,12 @@ export const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
     query instanceof Parse.Query &&
     isServer
   ) {
-    throw new Error(
-      'An EncodedParseQuery must be passed when running in the server side. Use the encodeParseQuery function.'
-    );
+    return {
+      isLoading: true,
+      isLive: false,
+      isSyncing: false,
+      reload: () => {}
+    };
   }
 
   const {
