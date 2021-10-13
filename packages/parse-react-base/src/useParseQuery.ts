@@ -401,7 +401,7 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
       try {
         findResult = await localDatastoreQuery!.find();
       } catch (e) {
-        dispatch(fail(queryId, e));
+        dispatch(fail(queryId, e as Error));
 
         return;
       }
@@ -437,7 +437,7 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
         await Parse.Object.unPinAllObjectsWithName(queryString);
         await Parse.Object.pinAllWithName(queryString, results);
       } catch (e) {
-        dispatch(fail(queryId, e));
+        dispatch(fail(queryId, e as Error));
       }
     },
     [queryString, queryId]
@@ -473,7 +473,7 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
               );
             }
           } else {
-            dispatch(fail(queryId, e));
+            dispatch(fail(queryId, e as Error));
           }        
   
           return ;
@@ -520,7 +520,7 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
           try {
             await result.pinWithName(queryString);
           } catch (e) {
-            dispatch(fail(queryId, e));
+            dispatch(fail(queryId, e as Error));
           }
         }
       };
@@ -545,7 +545,7 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
           try {
             await result.unPinWithName(queryString);
           } catch (e) {
-            dispatch(fail(queryId, e));
+            dispatch(fail(queryId, e as Error));
           }
         }
       };
@@ -554,7 +554,7 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
         try {
           liveQuerySubscription = await parseServerQuery.subscribe();
         } catch (e) {
-          dispatch(fail(queryId, e));
+          dispatch(fail(queryId, e as Error));
 
           return;
         }
