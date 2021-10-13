@@ -9,7 +9,7 @@
     "dev": "npm run start"
   },
   "devDependencies": {
-    "mongodb-runner": "4.8.3",
+    "mongodb-runner": "4.8.1",
     "parse-dashboard": "3.2.1"
   }
 }
