@@ -7,7 +7,7 @@ export * from '@parse/react-base';
 
 export const initializeParse = (serverURL: string, applicationId: string, javascriptKey: string) => {
   Parse.setAsyncStorage(AsyncStorage);
-  Parse.enableLocalDatastore();
   Parse.serverURL = serverURL;
   Parse.initialize(applicationId, javascriptKey);
+  Parse.enableLocalDatastore();
 };

@@ -14,11 +14,11 @@ if ((process as any).browser) {
 }
 
 export const initializeParse = (serverURL: string, applicationId: string, javascriptKey: string) => {
+  Parse.serverURL = serverURL;
+  Parse.initialize(applicationId, javascriptKey);
   if (!isServer) {
     Parse.enableLocalDatastore();
   }
-  Parse.serverURL = serverURL;
-  Parse.initialize(applicationId, javascriptKey);
 };
 
 export interface EncodedParseQuery {
