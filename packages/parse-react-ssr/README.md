@@ -58,6 +58,7 @@ export default function SomePage({ parseQuery }) {
   } = useParseQuery(
     parseQuery, // The Parse Query to be used
     {
+      enabled: true, // Enables the parse query (default: true)
       enableLocalDatastore: true, // Enables cache in local datastore (default: true)
       enableLiveQuery: true // Enables live query for real-time update (default: true)
     }

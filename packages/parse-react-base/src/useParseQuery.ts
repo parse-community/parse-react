@@ -324,6 +324,7 @@ const reducer = <T extends Parse.Object<Parse.Attributes>>(
 };
 
 export interface UseParseQueryOptions<T extends Parse.Object<Parse.Attributes>> {
+  enabled?: boolean;
   enableLocalDatastore?: boolean;
   enableLiveQuery?: boolean;
   initialLoad?: InitialLoad<T>;
@@ -348,6 +349,7 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
   );
 
   const {
+    enabled = true,
     enableLocalDatastore = true,
     enableLiveQuery = true,
     initialLoad,
@@ -605,18 +607,20 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
     () => {
       let cleanUp: (() => void) | undefined;
 
-      if (enableLocalDatastore) {
-        if (initialResults) {
-          pinResults(initialResults);
-        } else {
-          findFromLocalDatastore();
+      if (enabled) {
+        if (enableLocalDatastore) {
+          if (initialResults) {
+            pinResults(initialResults);
+          } else {
+            findFromLocalDatastore();
+          }
         }
-      }
 
-      if (enableLiveQuery) {
-        cleanUp = subscribeLiveQuery();
-      } else {
-        cleanUp = findFromParseServer();
+        if (enableLiveQuery) {
+          cleanUp = subscribeLiveQuery();
+        } else {
+          cleanUp = findFromParseServer();
+        }
       }
 
       return cleanUp;
@@ -635,6 +639,7 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
     () => reload,
     [
       queryString,
+      enabled,
       enableLocalDatastore,
       enableLiveQuery,
       initialResults,
