@@ -137,8 +137,8 @@ export const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
     decodedQuery,
     {
       enabled: options && options.enabled || undefined,
-      enableLocalDatastore: options && options.enableLocalDatastore || undefined,
-      enableLiveQuery: options && options.enableLiveQuery || undefined,
+      enableLocalDatastore: (options && options.enableLocalDatastore) ?? undefined,
+      enableLiveQuery: (options && options.enableLiveQuery) ?? undefined,
       initialLoad: options && options.initialLoad ||
         findResult && {
           results: findResultResults,
