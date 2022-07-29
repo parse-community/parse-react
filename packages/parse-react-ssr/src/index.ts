@@ -24,7 +24,7 @@ export const initializeParse = (serverURL: string, applicationId: string, javasc
 export interface EncodedParseQuery {
   className: string,
   query: object,
-  findResult?: object,
+  findResult?: [] | object[],
   findError?: object
 }
 
