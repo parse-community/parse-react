@@ -10,6 +10,6 @@
   },
   "devDependencies": {
     "mongodb-runner": "4.8.1",
-    "parse-dashboard": "3.2.1"
+    "parse-dashboard": "5.0.0"
   }
 }
