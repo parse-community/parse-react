@@ -328,6 +328,7 @@ export interface UseParseQueryOptions<T extends Parse.Object<Parse.Attributes>> 
   enableLocalDatastore?: boolean;
   enableLiveQuery?: boolean;
   initialLoad?: InitialLoad<T>;
+  useMasterKey?: boolean
 }
 
 export interface UseParseQueryResult<T extends Parse.Object<Parse.Attributes>> extends ResultState<T> {
@@ -353,6 +354,7 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
     enableLocalDatastore = true,
     enableLiveQuery = true,
     initialLoad,
+    useMasterKey = false
   } = options || {};
 
   const {
@@ -457,7 +459,7 @@ const useParseQuery = <T extends Parse.Object<Parse.Attributes>>(
   
         let findResult;
         try {
-          findResult = await parseServerQuery.find();
+          findResult = await parseServerQuery.find({useMasterKey:useMasterKey});
         } catch (e) {
           if (
             e instanceof Parse.Error &&
