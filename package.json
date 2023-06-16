@@ -4,9 +4,8 @@
   "license": "MIT",
   "scripts": {
     "clean": "lerna clean --yes && rm -r node_modules",
-    "bootstrap": "lerna bootstrap",
     "build": "lerna run build --scope '@parse/*' --stream",
-    "postinstall": "npm run bootstrap && npm run build",
+    "postinstall": "lerna exec -- npm install && npm run build",
     "dev-parse-react-base": "lerna run dev --scope @parse/react-base --stream",
     "dev-parse-react": "lerna run dev --scope @parse/react --stream",
     "dev-parse-react-native": "lerna run dev --scope @parse/react-native --stream",
@@ -21,13 +20,13 @@
     "prerelease": "lerna publish prerelease --no-verify-access --yes"
   },
   "devDependencies": {
-    "@types/parse": "2.18.12",
-    "@types/react": "17.0.29",
-    "@types/react-native": "0.65.5",
-    "lerna": "4.0.0",
-    "parse": "3.3.1",
-    "react": "17.0.2",
-    "react-native": "0.66.0",
-    "typescript": "4.4.4"
+    "@types/parse": "3.0.4",
+    "@types/react": "18.2.12",
+    "@types/react-native": "0.72.2",
+    "lerna": "7.0.2",
+    "parse": "4.1.0",
+    "react": "18.2.0",
+    "react-native": "0.71.11",
+    "typescript": "5.1.3"
   }
 }
